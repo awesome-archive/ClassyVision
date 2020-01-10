@@ -15,7 +15,6 @@ def get_test_task_config(head_num_classes=1000):
         "dataset": {
             "train": {
                 "name": "synthetic_image",
-                "split": "train",
                 "crop_size": 224,
                 "class_ratio": 0.5,
                 "num_samples": 2000,
@@ -39,7 +38,6 @@ def get_test_task_config(head_num_classes=1000):
             },
             "test": {
                 "name": "synthetic_image",
-                "split": "test",
                 "crop_size": 224,
                 "class_ratio": 0.5,
                 "num_samples": 2000,
@@ -81,7 +79,7 @@ def get_test_task_config(head_num_classes=1000):
         "optimizer": {
             "name": "sgd",
             "num_epochs": 12,
-            "lr": {"name": "step", "values": [0.1, 0.01]},
+            "param_schedulers": {"lr": {"name": "step", "values": [0.1, 0.01]}},
             "weight_decay": 1e-4,
             "momentum": 0.9,
         },
@@ -96,7 +94,6 @@ def get_fast_test_task_config(head_num_classes=1000):
         "dataset": {
             "train": {
                 "name": "synthetic_image",
-                "split": "train",
                 "crop_size": 20,
                 "class_ratio": 0.5,
                 "num_samples": 10,
@@ -120,7 +117,6 @@ def get_fast_test_task_config(head_num_classes=1000):
             },
             "test": {
                 "name": "synthetic_image",
-                "split": "test",
                 "crop_size": 20,
                 "class_ratio": 0.5,
                 "num_samples": 10,
@@ -177,7 +173,6 @@ def get_test_mlp_task_config():
         "dataset": {
             "train": {
                 "name": "synthetic_image",
-                "split": "train",
                 "num_classes": 2,
                 "crop_size": 20,
                 "class_ratio": 0.5,
@@ -203,7 +198,6 @@ def get_test_mlp_task_config():
             },
             "test": {
                 "name": "synthetic_image",
-                "split": "test",
                 "num_classes": 2,
                 "crop_size": 20,
                 "class_ratio": 0.5,
@@ -351,11 +345,13 @@ def get_test_video_task_config():
         },
         "optimizer": {
             "name": "sgd",
-            "lr": {
-                "name": "multistep",
-                "num_epochs": 10,
-                "values": [0.1, 0.01, 0.001, 0.0001],
-                "milestones": [3, 7, 9],
+            "param_schedulers": {
+                "lr": {
+                    "name": "multistep",
+                    "num_epochs": 10,
+                    "values": [0.1, 0.01, 0.001, 0.0001],
+                    "milestones": [3, 7, 9],
+                }
             },
             "weight_decay": 0.0001,
             "momentum": 0.9,

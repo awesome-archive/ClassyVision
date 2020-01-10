@@ -13,10 +13,11 @@ from classy_vision.generic.util import is_pos_int, is_pos_int_list
 from . import register_model
 from .classy_model import ClassyModel, ClassyModelEvaluationMode
 from .resnext3d_stage import ResStage
-from .resnext3d_stem import ResNeXt3DStem
+from .resnext3d_stem import R2Plus1DStem, ResNeXt3DStem
 
 
 model_stems = {
+    "r2plus1d_stem": R2Plus1DStem,
     "resnext3d_stem": ResNeXt3DStem,
     # For more types of model stem, add them below
 }
@@ -72,7 +73,8 @@ class ResNeXt3DBase(ClassyModel):
             assert arg in config, "resnext3d model requires argument %s" % arg
             ret_config[arg] = config[arg]
 
-        # Default setting for model stem
+        # Default setting for model stem, which is considered as stage 0. Stage
+        # index starts from 0 as implemented in ResStageBase._block_name() method.
         #   stem_planes: No. of output channles of conv op in stem
         #   stem_temporal_kernel: temporal size of conv op in stem
         #   stem_spatial_kernel: spatial size of conv op in stem
@@ -87,8 +89,8 @@ class ResNeXt3DBase(ClassyModel):
                 "stem_maxpool": config.get("stem_maxpool", False),
             }
         )
-        # Default setting for model stages 2, 3, 4 and 5
-        #   stage_planes: No. of output channel of 1st conv op in stage 2
+        # Default setting for model stages 1, 2, 3 and 4
+        #   stage_planes: No. of output channel of 1st conv op in stage 1
         #   stage_temporal_kernel_basis: Basis of temporal kernel sizes for each of
         #       the stage.
         #   temporal_conv_1x1: if True, do temporal convolution in the fist
@@ -300,6 +302,7 @@ class ResNeXt3D(ResNeXt3DBase):
         The model consists of one stem, a number of stages, and one or multiple
         heads that are attached to different blocks in the stage.
     """
+
     def __init__(
         self,
         input_key,
